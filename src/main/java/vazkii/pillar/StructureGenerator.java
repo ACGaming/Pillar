@@ -49,8 +49,8 @@ public final class StructureGenerator {
     private static final Pattern FUNCTION_PATTERN = Pattern.compile("\\$(.*?)\\((.*?)\\)\\$");
     private static final Pattern TOKENIZING_PATTERN = Pattern.compile("\\s*(?<!\\\\);\\s*");
 
-    private static final HashMap<String, DataHandler> dataHandlers = new HashMap();
-    private static final HashMap<String, Function> functions = new HashMap();
+    private static final HashMap<String, DataHandler> dataHandlers = new HashMap<>();
+    private static final HashMap<String, Function> functions = new HashMap<>();
 
     private static int iteration;
 
@@ -78,8 +78,6 @@ public final class StructureGenerator {
         MinecraftServer minecraftserver = world.getMinecraftServer();
         TemplateManager templatemanager = Pillar.templateManager;
         Template template = templatemanager.getTemplate(minecraftserver, new ResourceLocation(schema.structureName));
-
-        if (template == null) return false;
 
         BlockPos size = template.getSize();
         int top = pos.getY() + size.getY();
@@ -129,34 +127,37 @@ public final class StructureGenerator {
 
         if (schema.filling != null && !schema.filling.isEmpty()) {
             Block block = Block.getBlockFromName(schema.filling);
-            if (block != null) for (int i = 0; i < size.getX(); i++)
-                for (int j = 0; j < size.getZ(); j++) {
-                    BlockPos currPos = finalPos.add(Template.transformedBlockPos(settings, new BlockPos(i, 0, j)));
-                    IBlockState currState = world.getBlockState(currPos);
-                    if (currState.getBlock().isAir(currState, world, currPos) || currState.getBlock() == Blocks.STRUCTURE_BLOCK)
-                        continue;
+            if (block != null) {
+                for (int i = 0; i < size.getX(); i++) {
+                    for (int j = 0; j < size.getZ(); j++) {
+                        BlockPos currPos = finalPos.add(Template.transformedBlockPos(settings, new BlockPos(i, 0, j)));
+                        IBlockState currState = world.getBlockState(currPos);
+                        if (currState.getBlock().isAir(currState, world, currPos) || currState.getBlock() == Blocks.STRUCTURE_BLOCK)
+                            continue;
 
-                    FillingType type = schema.fillingType;
-                    if (type == null) type = FillingType.AIR;
+                        FillingType type = schema.fillingType;
+                        if (type == null) type = FillingType.AIR;
 
-                    int k = -1;
-                    while (true) {
-                        BlockPos checkPos = currPos.add(0, k, 0);
-                        IBlockState state = world.getBlockState(checkPos);
-                        if (type.canFill(world, state, checkPos)) {
-                            IBlockState newState = block.getStateFromMeta(schema.fillingMetadata);
+                        int k = -1;
+                        while (true) {
+                            BlockPos checkPos = currPos.add(0, k, 0);
+                            IBlockState state = world.getBlockState(checkPos);
+                            if (type.canFill(world, state, checkPos)) {
+                                IBlockState newState = block.getStateFromMeta(schema.fillingMetadata);
 
-                            if (schema.decay > 0 && newState.getBlock() == Blocks.STONEBRICK && newState.getValue(BlockStoneBrick.VARIANT) == BlockStoneBrick.EnumType.DEFAULT && rand.nextFloat() < schema.decay)
-                                newState = newState.withProperty(BlockStoneBrick.VARIANT, rand.nextBoolean() ? BlockStoneBrick.EnumType.MOSSY : BlockStoneBrick.EnumType.CRACKED);
+                                if (schema.decay > 0 && newState.getBlock() == Blocks.STONEBRICK && newState.getValue(BlockStoneBrick.VARIANT) == BlockStoneBrick.EnumType.DEFAULT && rand.nextFloat() < schema.decay)
+                                    newState = newState.withProperty(BlockStoneBrick.VARIANT, rand.nextBoolean() ? BlockStoneBrick.EnumType.MOSSY : BlockStoneBrick.EnumType.CRACKED);
 
-                            world.setBlockState(checkPos, newState);
-                        } else break;
+                                world.setBlockState(checkPos, newState);
+                            } else break;
 
-                        if (checkPos.getY() == 0) break;
+                            if (checkPos.getY() == 0) break;
 
-                        k--;
+                            k--;
+                        }
                     }
                 }
+            }
         }
 
         Map<BlockPos, String> dataBlocks = template.getDataBlocks(finalPos, settings);
@@ -287,20 +288,12 @@ public final class StructureGenerator {
 
         if (tokens.length >= 5) {
             String s = tokens[4];
-            switch (s) {
-                case "90":
-                case "-270":
-                    rotation = Rotation.CLOCKWISE_90;
-                    break;
-                case "180":
-                case "-180":
-                    rotation = Rotation.CLOCKWISE_180;
-                    break;
-                case "270":
-                case "-90":
-                    rotation = Rotation.COUNTERCLOCKWISE_90;
-                    break;
-            }
+            rotation = switch (s) {
+                case "90", "-270" -> Rotation.CLOCKWISE_90;
+                case "180", "-180" -> Rotation.CLOCKWISE_180;
+                case "270", "-90" -> Rotation.COUNTERCLOCKWISE_90;
+                default -> rotation;
+            };
         }
         rotation = rotation.add(settings.getRotation());
 
@@ -330,7 +323,7 @@ public final class StructureGenerator {
         if (params.length % 2 != 0)
             throw new IllegalArgumentException("rand_s function needs an even number of parameters");
 
-        List<WeightedString> strings = new ArrayList();
+        List<WeightedString> strings = new ArrayList<>();
         int len = params.length / 2;
 
         for (int i = 0; i < len; i++) {
@@ -432,11 +425,6 @@ public final class StructureGenerator {
         @Override
         public Entity getCommandSenderEntity() {
             return null;
-        }
-
-        @Override
-        public boolean sendCommandFeedback() {
-            return false;
         }
 
         @Override

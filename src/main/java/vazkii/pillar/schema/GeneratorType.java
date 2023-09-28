@@ -23,7 +23,7 @@ public enum GeneratorType {
     SURFACE(true, GeneratorType::surfacePos),
     UNDERGROUND(true, GeneratorType::undergroundPos),
     UNDERWATER(true, GeneratorType::underwaterPos),
-    BOVE_WATER(true, GeneratorType::aboveWaterPos),
+    ABOVE_WATER(true, GeneratorType::aboveWaterPos),
     SKY(false, GeneratorType::skyPos),
     ANYWHERE(false, GeneratorType::anywherePos),
     NONE(false, GeneratorType::disallow);
@@ -80,10 +80,7 @@ public enum GeneratorType {
 
     private static BlockPos anywherePos(StructureSchema schema, Random random, World world, BlockPos xzPos) {
         int y = getYFromBounds(schema, random, 1, 256);
-        BlockPos pos = new BlockPos(xzPos.getX(), y, xzPos.getZ());
-        IBlockState state = world.getBlockState(pos);
-
-        return pos;
+        return new BlockPos(xzPos.getX(), y, xzPos.getZ());
     }
 
     private static BlockPos disallow(StructureSchema schema, Random random, World world, BlockPos xzPos) {

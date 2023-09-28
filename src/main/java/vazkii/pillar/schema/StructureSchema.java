@@ -18,7 +18,7 @@ import java.util.List;
 
 public final class StructureSchema {
 
-    public transient String structureName;
+    public String structureName;
     public GeneratorType generatorType;
     public int maxY, minY;
     public int offsetX, offsetY, offsetZ;
@@ -44,35 +44,23 @@ public final class StructureSchema {
     }
 
     public Mirror getMirrorType() {
-        if (rotation == null)
-            return Mirror.NONE;
+        if (rotation == null) return Mirror.NONE;
 
-        switch (mirrorType) {
-            case "mirror_left_right":
-            case "LEFT_RIGHT":
-                return Mirror.LEFT_RIGHT;
-            case "mirror_front_back":
-            case "FRONT_BACK":
-                return Mirror.FRONT_BACK;
-        }
-        return Mirror.NONE;
+        return switch (mirrorType) {
+            case "mirror_left_right", "LEFT_RIGHT" -> Mirror.LEFT_RIGHT;
+            case "mirror_front_back", "FRONT_BACK" -> Mirror.FRONT_BACK;
+            default -> Mirror.NONE;
+        };
     }
 
     public Rotation getRotation() {
-        if (rotation == null)
-            return null;
+        if (rotation == null) return null;
 
-        switch (rotation) {
-            case "90":
-            case "-270":
-                return Rotation.CLOCKWISE_90;
-            case "180":
-            case "-180":
-                return Rotation.CLOCKWISE_180;
-            case "270":
-            case "-90":
-                return Rotation.COUNTERCLOCKWISE_90;
-        }
-        return Rotation.NONE;
+        return switch (rotation) {
+            case "90", "-270" -> Rotation.CLOCKWISE_90;
+            case "180", "-180" -> Rotation.CLOCKWISE_180;
+            case "270", "-90" -> Rotation.COUNTERCLOCKWISE_90;
+            default -> Rotation.NONE;
+        };
     }
 }

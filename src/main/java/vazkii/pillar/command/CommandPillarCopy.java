@@ -52,32 +52,36 @@ public class CommandPillarCopy extends CommandBase {
                     throw new CommandException("The world's structure folder could not be found.");
                 }
 
-                String requestedName = "";
-                if (args.length != 1) for (String arg : args)
-                    requestedName += (requestedName.length() > 0 ? " " : "") + arg;
-                else requestedName = args[0];
+                StringBuilder requestedName = new StringBuilder();
+                if (args.length != 1) {
+                    for (String arg : args) {
+                        requestedName.append((!requestedName.isEmpty()) ? " " : "").append(arg);
+                    }
+                } else requestedName = new StringBuilder(args[0]);
 
                 File[] structures = structureFolder.listFiles(NBT_FILTER);
-                for (File file : structures) {
-                    String fileName = file.getName();
-                    if (fileName.equalsIgnoreCase(requestedName + ".nbt")) {
-                        FileUtils.copyFileToDirectory(file, Pillar.structureDir);
-                        File jsonFile = new File(Pillar.pillarDir, fileName.replaceAll("\\.nbt$", ".json"));
-                        if (!jsonFile.exists()) {
-                            try {
-                                jsonFile.createNewFile();
-                                InputStream inStream = Pillar.class.getResourceAsStream("/assets/pillar/" + Pillar.TEMPLATE_FILE);
-                                System.out.println(inStream);
-                                OutputStream outStream = new FileOutputStream(jsonFile);
-                                IOUtils.copy(inStream, outStream);
-                                inStream.close();
-                                outStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                if (structures != null) {
+                    for (File file : structures) {
+                        String fileName = file.getName();
+                        if (fileName.equalsIgnoreCase(requestedName + ".nbt")) {
+                            FileUtils.copyFileToDirectory(file, Pillar.structureDir);
+                            File jsonFile = new File(Pillar.pillarDir, fileName.replaceAll("\\.nbt$", ".json"));
+                            if (!jsonFile.exists()) {
+                                try {
+                                    jsonFile.createNewFile();
+                                    InputStream inStream = Pillar.class.getResourceAsStream("/assets/pillar/" + Pillar.TEMPLATE_FILE);
+                                    System.out.println(inStream);
+                                    OutputStream outStream = new FileOutputStream(jsonFile);
+                                    IOUtils.copy(inStream, outStream);
+                                    inStream.close();
+                                    outStream.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
+                            sender.sendMessage(new TextComponentString("Successfully copied structure '" + fileName.replaceAll("\\.nbt$", "") + "'").setStyle(new Style().setColor(TextFormatting.GREEN)));
+                            return;
                         }
-                        sender.sendMessage(new TextComponentString("Successfully copied structure '" + fileName.replaceAll("\\.nbt$", "") + "'").setStyle(new Style().setColor(TextFormatting.GREEN)));
-                        return;
                     }
                 }
 
@@ -96,8 +100,11 @@ public class CommandPillarCopy extends CommandBase {
             List<String> files = new ArrayList<>();
             File structureFolder = server.getActiveAnvilConverter().getFile(server.getFolderName(), "structures");
             File[] structures = structureFolder.listFiles(NBT_FILTER);
-            for (File structure : structures)
-                files.add(structure.getName().replaceAll("\\.nbt$", ""));
+            if (structures != null) {
+                for (File structure : structures) {
+                    files.add(structure.getName().replaceAll("\\.nbt$", ""));
+                }
+            }
 
             return getListOfStringsMatchingLastWord(args, files);
         }

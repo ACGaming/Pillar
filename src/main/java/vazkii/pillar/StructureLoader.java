@@ -33,7 +33,7 @@ import java.util.Map;
 
 public final class StructureLoader {
 
-    public static final Map<String, StructureSchema> loadedSchemas = new HashMap();
+    public static final Map<String, StructureSchema> loadedSchemas = new HashMap<>();
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -51,18 +51,20 @@ public final class StructureLoader {
         });
 
         loadedSchemas.clear();
-        for (File f : files) {
-            try {
-                Pillar.log("Loading " + f.getName());
-                StructureSchema schema = gson.fromJson(new FileReader(f), new TypeToken<StructureSchema>() {
-                }.getType());
-                schema.structureName = getStructureNBTLocation(f.getName()).replaceAll("\\.nbt$", "");
-                if (schema != null && schema.generatorType != null) {
-                    Pillar.log("Loaded schema " + schema.structureName);
-                    loadedSchemas.put(schema.structureName, schema);
+        if (files != null) {
+            for (File f : files) {
+                try {
+                    Pillar.log("Loading " + f.getName());
+                    StructureSchema schema = gson.fromJson(new FileReader(f), new TypeToken<StructureSchema>() {
+                    }.getType());
+                    schema.structureName = getStructureNBTLocation(f.getName()).replaceAll("\\.nbt$", "");
+                    if (schema.generatorType != null) {
+                        Pillar.log("Loaded schema " + schema.structureName);
+                        loadedSchemas.put(schema.structureName, schema);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
 
@@ -74,16 +76,18 @@ public final class StructureLoader {
     public static void copyAllLootTables(World world) {
         File worldDir = getPillarLootTableDir(world);
 
-        List<String> refreshes = new ArrayList();
+        List<String> refreshes = new ArrayList<>();
 
         File[] files = Pillar.lootTablesDir.listFiles((File f) -> f.getName().endsWith(".json"));
-        for (File file : files)
-            try {
-                Files.copy(file.toPath(), new File(worldDir, file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                refreshes.add(file.getName().replaceAll("\\.json$", ""));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (files != null) {
+            for (File file : files)
+                try {
+                    Files.copy(file.toPath(), new File(worldDir, file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    refreshes.add(file.getName().replaceAll("\\.json$", ""));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
 
         if (!refreshes.isEmpty()) {
             LoadingCache<ResourceLocation, LootTable> cache = ReflectionHelper.getPrivateValue(LootTableManager.class, world.getLootTableManager(), Pillar.OBF_REGISTERED_LOOT_TABLES);

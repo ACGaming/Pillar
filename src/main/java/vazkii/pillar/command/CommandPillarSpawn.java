@@ -54,20 +54,12 @@ public class CommandPillarSpawn extends CommandBase {
         Rotation rot = Rotation.NONE;
 
         if (args.length > 4) {
-            switch (args[4]) {
-                case "90":
-                case "-270":
-                    rot = Rotation.CLOCKWISE_90;
-                    break;
-                case "180":
-                case "-180":
-                    rot = Rotation.CLOCKWISE_180;
-                    break;
-                case "270":
-                case "-90":
-                    rot = Rotation.COUNTERCLOCKWISE_90;
-                    break;
-            }
+            rot = switch (args[4]) {
+                case "90", "-270" -> Rotation.CLOCKWISE_90;
+                case "180", "-180" -> Rotation.CLOCKWISE_180;
+                case "270", "-90" -> Rotation.COUNTERCLOCKWISE_90;
+                default -> rot;
+            };
         }
 
         World world = sender.getEntityWorld();
@@ -80,7 +72,7 @@ public class CommandPillarSpawn extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         if (args.length == 1) {
-            List<String> list = new ArrayList(StructureLoader.loadedSchemas.keySet());
+            List<String> list = new ArrayList<>(StructureLoader.loadedSchemas.keySet());
             return getListOfStringsMatchingLastWord(args, list);
         }
 
