@@ -110,7 +110,7 @@ public class WorldGenerator implements IWorldGenerator {
 
         try {
             Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
-            if (schema.isBiomeNameSpawnsBlacklist) {
+            if (schema.isBiomeTagSpawnsBlacklist) {
                 for (BiomeDictionary.Type type : types) {
                     if (schema.biomeTagSpawns.contains(type.getName())) return false;
                 }
