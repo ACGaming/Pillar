@@ -86,7 +86,7 @@ public final class StructureLoader {
             }
 
         if (!refreshes.isEmpty()) {
-            LoadingCache<ResourceLocation, LootTable> cache = ReflectionHelper.getPrivateValue(LootTableManager.class, world.getLootTableManager(), Pillar.OBF_REGISTERED_LOOT_TABES);
+            LoadingCache<ResourceLocation, LootTable> cache = ReflectionHelper.getPrivateValue(LootTableManager.class, world.getLootTableManager(), Pillar.OBF_REGISTERED_LOOT_TABLES);
             for (String s : refreshes)
                 cache.refresh(new ResourceLocation("pillar", s));
         }
@@ -121,5 +121,4 @@ public final class StructureLoader {
     public static String jsonifySchema(StructureSchema schema) {
         return gson.toJson(schema);
     }
-
 }

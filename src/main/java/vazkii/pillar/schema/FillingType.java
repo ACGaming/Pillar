@@ -17,7 +17,9 @@ import net.minecraft.world.World;
 
 public enum FillingType {
 
-    AIR(FillingType::airCondition), WATER(FillingType::waterCondition), AIR_WATER(FillingType::combinedCondition);
+    AIR(FillingType::airCondition),
+    WATER(FillingType::waterCondition),
+    AIR_WATER(FillingType::combinedCondition);
 
     private final FillingCondition condition;
 

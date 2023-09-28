@@ -42,5 +42,4 @@ public class CommandPillarReload extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 2;
     }
-
 }

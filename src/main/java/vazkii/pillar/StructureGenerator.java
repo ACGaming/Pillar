@@ -367,8 +367,7 @@ public final class StructureGenerator {
 
     private static int toInt(String s, int def) {
         try {
-            int i = Integer.parseInt(s);
-            return i;
+            return Integer.parseInt(s);
         } catch (NumberFormatException e) {
             return def;
         }
@@ -456,6 +455,4 @@ public final class StructureGenerator {
         }
 
     }
-
 }
-

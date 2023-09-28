@@ -154,5 +154,4 @@ public enum GeneratorType {
     public interface BlockPosProvider {
         BlockPos getGenerationPosition(StructureSchema schema, Random random, World world, BlockPos xzPos);
     }
-
 }

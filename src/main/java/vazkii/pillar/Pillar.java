@@ -33,7 +33,7 @@ public class Pillar {
 
     public static final String TEMPLATE_FILE = "_template.json";
     // Obfuscation stuff
-    public static final String[] OBF_REGISTERED_LOOT_TABES = {"c", "field_186527_c", "registeredLootTables"};
+    public static final String[] OBF_REGISTERED_LOOT_TABLES = {"c", "field_186527_c", "registeredLootTables"};
     public static File pillarDir;
     public static File structureDir;
     public static File lootTablesDir;
@@ -99,5 +99,4 @@ public class Pillar {
         event.registerServerCommand(new CommandPillarSpawn());
         event.registerServerCommand(new CommandPillarCopy());
     }
-
 }

@@ -103,5 +103,4 @@ public class CommandPillarCopy extends CommandBase {
         }
         return super.getTabCompletions(server, sender, args, pos);
     }
-
 }

@@ -91,5 +91,4 @@ public class CommandPillarSpawn extends CommandBase {
     public int getRequiredPermissionLevel() {
         return 2;
     }
-
 }

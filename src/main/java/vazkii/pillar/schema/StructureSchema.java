@@ -19,27 +19,21 @@ import java.util.List;
 public final class StructureSchema {
 
     public transient String structureName;
-
     public GeneratorType generatorType;
     public int maxY, minY;
-
     public int offsetX, offsetY, offsetZ;
     public String mirrorType;
     public String rotation;
     public boolean ignoreEntities;
-
     public List<Integer> dimensionSpawns;
     public List<String> biomeNameSpawns;
     public List<String> biomeTagSpawns;
-
     public boolean isDimensionSpawnsBlacklist;
     public boolean isBiomeNameSpawnsBlacklist;
     public boolean isBiomeTagSpawnsBlacklist;
     public boolean generateEverywhere;
-
     public float integrity, decay;
     public int rarity;
-
     public String filling;
     public int fillingMetadata;
     public FillingType fillingType;
