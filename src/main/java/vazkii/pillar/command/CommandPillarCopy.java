@@ -55,7 +55,7 @@ public class CommandPillarCopy extends CommandBase {
                 StringBuilder requestedName = new StringBuilder();
                 if (args.length != 1) {
                     for (String arg : args) {
-                        requestedName.append((!requestedName.isEmpty()) ? " " : "").append(arg);
+                        requestedName.append(requestedName.length() > 0 ? " " : "").append(arg);
                     }
                 } else requestedName = new StringBuilder(args[0]);
 
