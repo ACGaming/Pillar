@@ -29,12 +29,14 @@ import java.util.*;
 
 public class WorldGenerator implements IWorldGenerator {
 
+    private final Set<BlockPos> generatedStructurePositions = new HashSet<>();
+
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         if (!(world instanceof WorldServer)) return;
 
         int structuresGenerated = 0;
-        List<StructureSchema> schemaList = new ArrayList(StructureLoader.loadedSchemas.values());
+        List<StructureSchema> schemaList = new ArrayList<>(StructureLoader.loadedSchemas.values());
         Collections.shuffle(schemaList, random);
         for (StructureSchema schema : schemaList) {
             EnumActionResult res = generateStructure(schema, random, world, chunkX, chunkZ);
@@ -69,7 +71,11 @@ public class WorldGenerator implements IWorldGenerator {
 
                 if (canSpawnInPosition(schema, world, pos)) {
                     boolean generated = StructureGenerator.placeStructureAtPosition(random, schema, Rotation.NONE, (WorldServer) world, pos, true);
-                    return generated ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+                    if (generated) {
+                        generatedStructurePositions.add(pos);
+                        return EnumActionResult.SUCCESS;
+                    }
+                    return EnumActionResult.FAIL;
                 }
             }
 
@@ -81,6 +87,13 @@ public class WorldGenerator implements IWorldGenerator {
 
     public boolean canSpawnInPosition(StructureSchema schema, World world, BlockPos pos) {
         if (schema.generateEverywhere) return true;
+
+        // Check the minimum distance between structures
+        for (BlockPos generatedPos : generatedStructurePositions) {
+            if (pos.distanceSq(generatedPos) < Pillar.minDistanceBetweenStructures * Pillar.minDistanceBetweenStructures) {
+                return false;
+            }
+        }
 
         if (!schema.dimensionSpawns.isEmpty()) {
             int dim = world.provider.getDimension();
@@ -98,12 +111,15 @@ public class WorldGenerator implements IWorldGenerator {
         try {
             Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
             if (schema.isBiomeNameSpawnsBlacklist) {
-                for (BiomeDictionary.Type type : types)
+                for (BiomeDictionary.Type type : types) {
                     if (schema.biomeTagSpawns.contains(type.getName())) return false;
-
+                }
                 return true;
-            } else for (BiomeDictionary.Type type : types)
-                if (schema.biomeTagSpawns.contains(type.getName())) return true;
+            } else {
+                for (BiomeDictionary.Type type : types) {
+                    if (schema.biomeTagSpawns.contains(type.getName())) return true;
+                }
+            }
         } catch (NullPointerException e) {
             // In case a biome isn't properly registered
         }

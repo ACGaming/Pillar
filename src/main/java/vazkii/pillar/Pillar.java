@@ -43,6 +43,7 @@ public class Pillar {
     public static int maxStructuresInOneChunk;
     public static int generatorWeight;
     public static int maximumGenerationIterations;
+    public static int minDistanceBetweenStructures;
 
     public static void resetManagers(World world) {
         templateManager = new TemplateManager(structureDir.getAbsolutePath(), new DataFixer(0));
@@ -62,6 +63,7 @@ public class Pillar {
         maxStructuresInOneChunk = config.getInt("Max Structures In One Chunk", Configuration.CATEGORY_GENERAL, 1, 1, Integer.MAX_VALUE, "");
         generatorWeight = config.getInt("Generator Weight", Configuration.CATEGORY_GENERAL, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, "The weight to apply to Pillar's generator. Higher weight generators will spawn their structures before other mods'");
         maximumGenerationIterations = config.getInt("Maximum Generation Iterations", Configuration.CATEGORY_GENERAL, 50, 0, Integer.MAX_VALUE, "In a chain of structures spawned by 'struct' data blocks in other structures, how many can be spawned before the chain is put to a halt.");
+        minDistanceBetweenStructures = config.getInt("Min Distance Between Structures", Configuration.CATEGORY_GENERAL, 128, 1, Integer.MAX_VALUE, "The minimum distance in blocks between structures.");
 
         if (config.hasChanged()) config.save();
 
