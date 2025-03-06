@@ -151,7 +151,7 @@ public final class StructureGenerator {
                                 world.setBlockState(checkPos, newState);
                             } else break;
 
-                            if (checkPos.getY() == 0) break;
+                            if (checkPos.getY() <= 0) break;
 
                             k--;
                         }
