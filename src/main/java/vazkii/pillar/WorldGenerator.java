@@ -26,10 +26,11 @@ import vazkii.pillar.schema.GeneratorType;
 import vazkii.pillar.schema.StructureSchema;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WorldGenerator implements IWorldGenerator {
 
-    private final Set<BlockPos> generatedStructurePositions = new HashSet<>();
+    private final Map<BlockPos, String> generatedStructurePositions = new HashMap<>();
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
@@ -70,12 +71,15 @@ public class WorldGenerator implements IWorldGenerator {
                     }
 
                 if (canSpawnInPosition(schema, world, pos)) {
+                    // Prevent race-condition between multiple chunk generators by calling this before the expensive place call
+                    generatedStructurePositions.put(pos, schema.structureName);
                     boolean generated = StructureGenerator.placeStructureAtPosition(random, schema, Rotation.NONE, (WorldServer) world, pos, true);
-                    if (generated) {
-                        generatedStructurePositions.add(pos);
-                        return EnumActionResult.SUCCESS;
+                    if (!generated) {
+                        // Remove the structure from memory if the generation failed
+                        generatedStructurePositions.remove(pos);
+                        return EnumActionResult.FAIL;
                     }
-                    return EnumActionResult.FAIL;
+                    return EnumActionResult.SUCCESS;
                 }
             }
 
@@ -88,9 +92,14 @@ public class WorldGenerator implements IWorldGenerator {
     public boolean canSpawnInPosition(StructureSchema schema, World world, BlockPos pos) {
         if (schema.generateEverywhere) return true;
 
+        HashSet<BlockPos> structureKnownPositions = generatedStructurePositions.entrySet().stream()
+                .filter(entry -> schema.structureName.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toCollection(HashSet::new));
+
         // Check the minimum distance between structures
-        for (BlockPos generatedPos : generatedStructurePositions) {
-            if (pos.distanceSq(generatedPos) < Pillar.minDistanceBetweenStructures * Pillar.minDistanceBetweenStructures) {
+        for (BlockPos generatedPos : structureKnownPositions) {
+            if (pos.distanceSq(generatedPos) <= schema.minDistanceToSameTypeStructures * schema.minDistanceToSameTypeStructures) {
                 return false;
             }
         }

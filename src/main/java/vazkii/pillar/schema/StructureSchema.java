@@ -34,6 +34,7 @@ public final class StructureSchema {
     public boolean generateEverywhere;
     public float integrity, decay;
     public int rarity;
+    public int minDistanceToSameTypeStructures;
     public String filling;
     public int fillingMetadata;
     public FillingType fillingType;
