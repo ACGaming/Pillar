@@ -10,6 +10,7 @@
  */
 package vazkii.pillar;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumActionResult;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class WorldGenerator implements IWorldGenerator {
 
-    private final Map<BlockPos, String> generatedStructurePositions = new HashMap<>();
+    private final Map<BlockPos, String> generatedStructurePositions = new Object2ObjectOpenHashMap<>();
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {

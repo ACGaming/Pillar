@@ -10,6 +10,7 @@
  */
 package vazkii.pillar;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockStoneBrick;
@@ -49,8 +50,8 @@ public final class StructureGenerator {
     private static final Pattern FUNCTION_PATTERN = Pattern.compile("\\$(.*?)\\((.*?)\\)\\$");
     private static final Pattern TOKENIZING_PATTERN = Pattern.compile("\\s*(?<!\\\\);\\s*");
 
-    private static final HashMap<String, DataHandler> dataHandlers = new HashMap<>();
-    private static final HashMap<String, Function> functions = new HashMap<>();
+    private static final Map<String, DataHandler> dataHandlers = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, Function> functions = new Object2ObjectOpenHashMap<>();
 
     private static int iteration;
 

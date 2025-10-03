@@ -14,6 +14,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTable;
@@ -27,13 +28,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class StructureLoader {
 
-    public static final Map<String, StructureSchema> loadedSchemas = new HashMap<>();
+    public static final Map<String, StructureSchema> loadedSchemas = new Object2ObjectOpenHashMap<>();
 
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
